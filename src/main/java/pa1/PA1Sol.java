@@ -94,7 +94,7 @@ public class PA1Sol {
         }
         minIndexStack.pop();
       }
-      // -1 cos double counted the current building
+      // -1 because we  double counted the current building
       area[i] += height * (rightIndex - i - 1) * width;
       minIndexStack.push(i);
     }

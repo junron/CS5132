@@ -1,7 +1,5 @@
 package lab3;
 
-import java.util.Arrays;
-
 public class ReverseStack {
   public static <T> ArrayStack<T> reverseA(ArrayStack<T> stack) {
     ArrayStack<T> stack2 = new ArrayStack<>();
@@ -12,13 +10,18 @@ public class ReverseStack {
   public static <T> void reverseB(ArrayStack<T> stack) {
     int n = stack.size();
     for (int i = 0; i < n-1; i++)
-      moveBottomToTop(stack, 0, i);
+      moveBottomToI(stack, 0, i);
   }
 
-  public static <T> T moveBottomToTop(ArrayStack<T> stack, int i, int insertIndex) {
+  // 1 2 3 4
+  // 4 1 2 3
+  // 4 3 1 2
+  // 4 3 2 1
+  
+  public static <T> T moveBottomToI(ArrayStack<T> stack, int i, int insertIndex) {
     T popped = stack.pop();
     if (stack.isEmpty()) return popped;
-    T ret = moveBottomToTop(stack, i + 1, insertIndex);
+    T ret = moveBottomToI(stack, i + 1, insertIndex);
     stack.push(popped);
     if (i == insertIndex) {
       stack.push(ret);
