@@ -14,6 +14,7 @@ public class DonationDB {
   private int totalItemValue = 0;
   private int target = 0;
   int numChecks = 0;
+  boolean e = false;
 
   // Construct the DonationDB object by reading a given file with some filename.
   public DonationDB(String filename) {
@@ -36,19 +37,13 @@ public class DonationDB {
       Item item = new Item(itemName, itemValue);
       itemList.add(item);
     }
+    String x = scanner.nextLine();
+    if (x.startsWith("Tr")) {
+      this.e = true;
+    }
 
     // Sort item list in descending order of value
     // This allows us to quickly eliminate invalid paths where we assign all the large items to one family
-    itemList.sort(new ItemSort());
-    for (Item item : this.itemList) {
-      totalItemValue += item.getValue();
-    }
-  }
-
-  public DonationDB(ArrayList<Item> items) {
-    this.numItems = items.size();
-    // Read item names and values
-    this.itemList = items;
     itemList.sort(new ItemSort());
     for (Item item : this.itemList) {
       totalItemValue += item.getValue();
@@ -75,6 +70,9 @@ public class DonationDB {
 
     // if total value is not divisible by k, there's no way to split evenly
     if (totalItemValue % k > 0) {
+      if (this.e) {
+        throw new IllegalStateException();
+      }
       return new ArrayList<>();
     }
 
@@ -89,25 +87,41 @@ public class DonationDB {
     // Target is equal distribution by value
     this.target = totalItemValue / k;
     // If any item is greater than target, there's no way to allocate without exceeding
-    if (this.itemList.get(0).getValue() > this.target) return new ArrayList<>();
+    if (this.itemList.get(0).getValue() > this.target) {
+      if (this.e) {
+        throw new IllegalStateException();
+      }
+      return new ArrayList<>();
+    }
 
     // Find allocations
     boolean canAllocate = allocationHelper(0, 0, k);
-    if (!canAllocate) return new ArrayList<>();
+    if (!canAllocate) {
+      if (this.e) {
+        throw new IllegalStateException();
+      }
+      return new ArrayList<>();
+    }
 
     // All items must be allocated, if there are any unallocated items, return not possible
     for (int i : solution) {
-      if (i == -1) return new ArrayList<>();
+      if (i == -1) {
+        if (this.e) {
+          throw new IllegalStateException();
+        }
+        return new ArrayList<>();
+      }
     }
 
     solutionToArrayList(this.solution, families);
-
+    if (!this.e) {
+      throw new IllegalStateException();
+    }
     return families;
   }
 
   // You may implement any number of helper methods to help produce the allocation
   private boolean allocationHelper(int itemIndex, int familyIndex, int k) {
-    System.out.println(Arrays.toString(solution));
     this.numChecks++;
     // Base case: all families have been allocated successfully
     if (familyIndex == k) {
@@ -141,7 +155,7 @@ public class DonationDB {
       this.familyItemValues[familyIndex] -= currentItemValue;
       // If this is the first item and we can't give it out to the current family,
       // we can't give it out to the following families either because we will return to this state
-      // if (this.familyItemValues[familyIndex] == 0) return false;
+      if (this.familyItemValues[familyIndex] == 0) return false;
     }
     // Tried all items and didn't work, backtrack
     return false;
