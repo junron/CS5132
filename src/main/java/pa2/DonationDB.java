@@ -2,14 +2,14 @@ package pa2;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class DonationDB {
   private int numItems;
   private ArrayList<Item> itemList;
   private int[] solution;
+  private long used;
+  HashMap<Long, Boolean> cache = new HashMap<>();
   private int[] familyItemValues;
   private int totalItemValue = 0;
   private int target = 0;
@@ -83,6 +83,8 @@ public class DonationDB {
     this.solution = new int[numItems];
     // Set to -1, ie not allocated
     Arrays.fill(this.solution, -1);
+    this.cache = new HashMap<>();
+    this.used = 0;
 
     // Target is equal distribution by value
     this.target = totalItemValue / k;
@@ -135,27 +137,35 @@ public class DonationDB {
 
     for (int i = itemIndex; i < numItems; i++) {
       // Already given out, can't use anymore
-      if (this.solution[i] != -1) {
-        continue;
-      }
+      if ((this.used & 2L << i) != 0L) continue;
       int currentItemValue = this.itemList.get(i).getValue();
       // If picking this item will exceed target, skip
       if (currentItemValue + familyValue > this.target) {
+        cache.put(this.used +  2L << i, false);
         continue;
       }
       // Try giving to current family
       this.solution[i] = familyIndex;
+      this.used += 2L << i;
+      if (cache.containsKey(this.used)) {
+        if (!cache.get(this.used)) {
+          this.solution[i] = -1;
+          this.used -= 2L << i;
+          continue;
+        } else {
+          return true;
+        }
+      }
       this.familyItemValues[familyIndex] += currentItemValue;
       // Check if solution is valid for remaining families
       boolean result = allocationHelper(itemIndex + 1, familyIndex, k);
+      cache.put(this.used, result);
       if (result) return true;
       // This solution isn't valid :(
       // Remove from family
       this.solution[i] = -1;
+      this.used -= 2L << i;
       this.familyItemValues[familyIndex] -= currentItemValue;
-      // If this is the first item and we can't give it out to the current family,
-      // we can't give it out to the following families either because we will return to this state
-      if (this.familyItemValues[familyIndex] == 0) return false;
     }
     // Tried all items and didn't work, backtrack
     return false;
