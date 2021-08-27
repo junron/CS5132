@@ -319,18 +319,4 @@ public class LinkedBinarySearchTree<T> extends LinkedBinaryTree<T> implements Bi
 
     return result;
   }
-
-  public void printTree() {
-    printTreeHelper(this.root,0);
-  }
-
-  private void printTreeHelper(BinaryTreeNode<T> root, int indent) {
-    if(root == null) return;
-    System.out.print(" ".repeat(indent));
-    System.out.println(root.element.toString());
-    printTreeHelper(root.left, indent + 1);
-    printTreeHelper(root.right, indent + 1);
-  }
-   
 }
-

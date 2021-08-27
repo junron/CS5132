@@ -141,7 +141,7 @@ public class DonationDB {
       int currentItemValue = this.itemList.get(i).getValue();
       // If picking this item will exceed target, skip
       if (currentItemValue + familyValue > this.target) {
-        cache.put(this.used +  2L << i, false);
+        cache.put(this.used + 2L << i, false);
         continue;
       }
       // Try giving to current family
@@ -157,7 +157,7 @@ public class DonationDB {
         }
       }
       this.familyItemValues[familyIndex] += currentItemValue;
-      // Check if solution is valid for remaining families
+      // Check if solution is valid for remaining items and families
       boolean result = allocationHelper(itemIndex + 1, familyIndex, k);
       cache.put(this.used, result);
       if (result) return true;
