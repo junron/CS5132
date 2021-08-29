@@ -1,7 +1,5 @@
 package pa2;
 
-import java.util.ArrayList;
-import java.util.Random;
 
 // DO NOT EDIT THE CLASS!
 // Class to test the implementation of the DonationDB
