@@ -120,7 +120,7 @@ public class DonationDB {
       // If picking this item will exceed target, skip
       if (currentItemValue + familyValue > this.target) {
         this.used.set(i);
-        cache.put(this.used, false);
+        cache.put((BitSet) this.used.clone(), false);
         this.used.clear(i);
         continue;
       }
