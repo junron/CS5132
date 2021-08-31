@@ -69,8 +69,8 @@ public class BSTTester {
     while (!queue.isEmpty()) {
       BinaryTreeNode<Integer> curr = queue.poll();
       out.add(curr.element);
-      if(curr.left != null) queue.add(curr.left);
-      if(curr.right != null) queue.add(curr.right);
+      if (curr.left != null) queue.add(curr.left);
+      if (curr.right != null) queue.add(curr.right);
     }
     return out;
   }
@@ -78,7 +78,31 @@ public class BSTTester {
   // Q3: Complete the following method to construct a tree from the pre and in order traversals
   // You may add your own auxillary methods
   public static LinkedBinarySearchTree<Integer> constructTree(ArrayList<Integer> preOrder, ArrayList<Integer> inOrder) {
-    return null;
+    if (preOrder.size() == 0) return null;
+    LinkedBinarySearchTree<Integer> tree = new LinkedBinarySearchTree<>(preOrder.get(0));
+    BinaryTreeNode<Integer> root = tree.root;
+
+    int i = 0;
+    // Split inorder into left and right subtree
+    for (int element : inOrder) {
+      if (element == root.element) {
+        break;
+      }
+      i++;
+    }
+
+    ArrayList<Integer> inorderLeft = new ArrayList<>(inOrder.subList(0, i));
+    ArrayList<Integer> inorderRight = new ArrayList<>(inOrder.subList(i + 1, inOrder.size()));
+
+    ArrayList<Integer> preorderLeft = new ArrayList<>(preOrder.subList(1, i + 1));
+    ArrayList<Integer> preorderRight = new ArrayList<>(preOrder.subList(i + 1, preOrder.size()));
+
+    LinkedBinarySearchTree<Integer> leftTree = constructTree(preorderLeft, inorderLeft);
+    LinkedBinarySearchTree<Integer> rightTree = constructTree(preorderRight, inorderRight);
+    root.left = leftTree != null ? leftTree.root : null;
+    root.right = rightTree != null ? rightTree.root : null;
+
+    return tree;
   }
 
 }

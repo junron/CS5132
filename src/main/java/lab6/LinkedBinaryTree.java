@@ -122,7 +122,7 @@ public class LinkedBinaryTree<T> implements BinaryTreeADT<T> {
       if (!out.isEmpty()) out += "\n";
       out += row;
     }
-    return out;
+    return out + "\n";
   }
 
   private void toStringHelper(BinaryTreeNode<T> root, int depth, ArrayList<String> out) {
@@ -136,9 +136,9 @@ public class LinkedBinaryTree<T> implements BinaryTreeADT<T> {
     }
 
     if (out.size() <= depth) {
-      out.add(String.format("%2d", root.element) + " ");
+      out.add(String.format("%-2d", root.element) + " ");
     } else {
-      out.set(depth, out.get(depth) + String.format("%2d", root.element) + " ");
+      out.set(depth, out.get(depth) + String.format("%-2d", root.element) + " ");
     }
     toStringHelper(root.left, depth + 1, out);
     toStringHelper(root.right, depth + 1, out);
