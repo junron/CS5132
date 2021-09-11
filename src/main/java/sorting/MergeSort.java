@@ -4,8 +4,7 @@ import java.util.Arrays;
 
 public class MergeSort {
   public static void main(String[] args) {
-    // Integer[] numArr = {91, 7, 2, 38, 31, 76, 12, 15, 12, 3};
-    Integer[] numArr = {6, 5, 4, 3, 2, 1};
+    Integer[] numArr = {91, 7, 2, 38, 31, 76, 12, 15, 12, 3};
     System.gc();
 
     long startTime = System.nanoTime();
@@ -29,28 +28,30 @@ public class MergeSort {
   public static <T extends Comparable<? super T>> void mergeSort(T[] data, int left, int right) {
     int size = right - left;
     // If array is a single element or is empty, it is already sorted
-    if (size <= 1) return;
+    if (size <= 1) {
+      return;
+    }
     int mid = size / 2 + left;
     mergeSort(data, left, mid);
     mergeSort(data, mid, right);
-    merge(data, left, size / 2);
+    merge(data, left, mid - left, right - mid);
   }
 
   // Merges 2 sorted arrays of length size, with the first starting at start and the second starting at start + size
-  private static <T extends Comparable<? super T>> void merge(T[] data, int start, int size) {
+  private static <T extends Comparable<? super T>> void merge(T[] data, int start, int size1, int size2) {
     int i = 0;
     int j = 0;
 
     int writeIndex = 0;
-    T[] temp = (T[]) new Comparable[size * 2];
-    while (i < size || j < size) {
+    T[] temp = (T[]) new Comparable[size1 + size2];
+    while (i < size1 || j < size2) {
       // Ensure i doesn't exceed array bounds
-      int iIndex = Math.min(i, size - 1);
+      int iIndex = Math.min(i, size1 - 1);
       // Ensure j doesn't exceed array bounds
-      int jIndex = Math.min(j, size - 1);
+      int jIndex = Math.min(j, size2 - 1);
       // If we're done with array 1, copy elements from array 2
       if (iIndex != i) {
-        temp[writeIndex] = data[start + jIndex + size];
+        temp[writeIndex] = data[start + jIndex + size1];
         j++;
         writeIndex++;
         continue;
@@ -63,13 +64,13 @@ public class MergeSort {
         continue;
       }
       // Copy the smaller of the fronts of the two arrays to the back of the temp array
-      if (data[start + iIndex].compareTo(data[start + jIndex + size]) <= 0) {
+      if (data[start + iIndex].compareTo(data[start + jIndex + size1]) <= 0) {
         // First array front is smaller than second array
         temp[writeIndex] = data[start + iIndex];
         i++;
       } else {
         // Second array front is smaller 
-        temp[writeIndex] = data[start + jIndex + size];
+        temp[writeIndex] = data[start + jIndex + size1];
         j++;
       }
       writeIndex++;
@@ -78,12 +79,4 @@ public class MergeSort {
     // Copy temp elements back to actual array
     System.arraycopy(temp, 0, data, start, temp.length);
   }
-
-  // Swaps the items at index i and j
-  private static <T extends Comparable<? super T>> void swap(T[] data, int i, int j) {
-    T temp = data[i];
-    data[i] = data[j];
-    data[j] = temp;
-  }
-
 }
