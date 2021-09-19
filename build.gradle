@@ -1,5 +1,8 @@
 plugins {
     id 'java'
+     id 'org.openjfx.javafxplugin' version '0.0.7'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
 }
 
 group 'org.example'
@@ -8,12 +11,24 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
+javafx {
+    modules = ["javafx.controls", "javafx.fxml"]
+}
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation "org.openjfx:javafx-graphics:16:win"
+    implementation "org.openjfx:javafx-graphics:16:mac"
 }
+
+shadowJar {
+    baseName = 'kdtree'
+}
+
 
 test {
     useJUnitPlatform()
 }
+
+mainClassName = "pa3.MainMain"

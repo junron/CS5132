@@ -180,7 +180,10 @@ public class KDTree {
   // Method to perform the nearest neighbour search in the k-d Tree.
   // You may add on your own parameters in this method. Ensure you do the same for the tester if so
   public ATM nearestNeighbour(double x, double y, KDTreeNode<ATM> curr) {
-    return root.getItem();
+    ATM nearest;
+    double nearestDistance;
+    // for(ATM atm: curr.)
+    return curr.getItem();
   }
 
   // Method to rebalance the k-d Tree. You may implement this method in the insertNode and deleteNode methods
