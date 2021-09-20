@@ -16,6 +16,23 @@ public class KDTree {
 
   // Complete the code for the methods below. You are allowed any additional helper methods.
 
+  private int compareATMs(ATM atm1, ATM atm2, int depth) {
+    if (depth % 2 == 0) {
+      if (atm1.getX() < atm2.getX()) {
+        return -1;
+      } else if (atm1.getX() == atm2.getX()) {
+        return 0;
+      }
+    } else {
+      if (atm1.getY() < atm2.getY()) {
+        return -1;
+      } else if (atm1.getY() == atm2.getY()) {
+        return 0;
+      }
+    }
+    return 1;
+  }
+
   // Constructor for the KDTree. See the KDTreeTester for how the constructor should work
   public KDTree(String filename) {
     File file = new File(filename);
@@ -49,45 +66,26 @@ public class KDTree {
       return;
     }
     KDTreeNode<ATM> curr = root;
+
     int depth = 0;
     while (true) {
       KDTreeNode<ATM> next;
-      ATM currATM = curr.getItem();
-      // On even depths, compare x, otherwise compare left
-      if (depth % 2 == 0) {
-        if (atm.getX() < currATM.getX()) {
-          // Current x smaller, go left
-          next = curr.getLeft();
-        } else {
-          next = curr.getRight();
-        }
+      // ATM is smaller, go left
+      if (compareATMs(atm, curr.getItem(), depth) == -1) {
+        next = curr.getLeft();
       } else {
-        if (atm.getY() < currATM.getY()) {
-          // Current x smaller, go left
-          next = curr.getLeft();
-        } else {
-          next = curr.getRight();
-        }
+        next = curr.getRight();
       }
       if (next == null) break;
       curr = next;
       depth++;
     }
-    ATM currATM = curr.getItem();
-    // Insert node
-    if (depth % 2 == 0) {
-      if (atm.getX() < currATM.getX()) {
-        curr.setLeft(new KDTreeNode<>(atm));
-      } else {
-        curr.setRight(new KDTreeNode<>(atm));
-      }
+
+    // ATM is smaller, go left
+    if (compareATMs(atm, curr.getItem(), depth) == -1) {
+      curr.setLeft(new KDTreeNode<>(atm));
     } else {
-      if (atm.getY() < currATM.getY()) {
-        // Current x smaller, go left
-        curr.setLeft(new KDTreeNode<>(atm));
-      } else {
-        curr.setRight(new KDTreeNode<>(atm));
-      }
+      curr.setRight(new KDTreeNode<>(atm));
     }
   }
 
@@ -98,45 +96,24 @@ public class KDTree {
     int depth = 0;
     while (true) {
       KDTreeNode<ATM> next;
-      ATM currATM = curr.getItem();
-      // On even depths, compare x, otherwise compare left
-      if (depth % 2 == 0) {
-        if (atmdel.getX() < currATM.getX()) {
-          // Current x smaller, go left
-          next = curr.getLeft();
-          if (next.getItem().equals(atmdel)) {
-            curr.setLeft(null);
-            // Reinsert children
-            insertNodeChildren(next);
-            return atmdel;
-          }
-        } else {
-          next = curr.getRight();
-          if (next.getItem().equals(atmdel)) {
-            curr.setRight(null);
-            // Reinsert children
-            insertNodeChildren(next);
-            return atmdel;
-          }
+      // ATM is smaller, go left
+      if (compareATMs(atmdel, curr.getItem(), depth) == -1) {
+        next = curr.getLeft();
+        // Next is the node to be deleted, delete child of current
+        if (next.getItem().equals(atmdel)) {
+          curr.setLeft(null);
+          // Reinsert children
+          insertNodeChildren(next);
+          return atmdel;
         }
       } else {
-        if (atmdel.getY() < currATM.getY()) {
-          // Current x smaller, go left
-          next = curr.getLeft();
-          if (next.getItem().equals(atmdel)) {
-            curr.setLeft(null);
-            // Reinsert children
-            insertNodeChildren(next);
-            return atmdel;
-          }
-        } else {
-          next = curr.getRight();
-          if (next.getItem().equals(atmdel)) {
-            curr.setRight(null);
-            // Reinsert children
-            insertNodeChildren(next);
-            return atmdel;
-          }
+        next = curr.getRight();
+        // Next is the node to be deleted, delete child of current
+        if (next.getItem().equals(atmdel)) {
+          curr.setRight(null);
+          // Reinsert children
+          insertNodeChildren(next);
+          return atmdel;
         }
       }
       curr = next;
