@@ -12,6 +12,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
+import java.util.HashMap;
+
 
 public class Controller {
   @FXML
@@ -45,6 +47,7 @@ public class Controller {
 
   private Circle selectedCircle;
   private ATM nearestATM;
+  private HashMap<ATM, Circle> atmCircleMap = new HashMap<>();
 
   private Circle userCircle;
 
@@ -55,7 +58,7 @@ public class Controller {
 
 
   public Controller() {
-    this.kdtree = new KDTree("ATMLocations.csv");
+    this.kdtree = new KDTree("ATMLocations2.csv");
   }
 
 
@@ -64,6 +67,7 @@ public class Controller {
     pane.getChildren().add(circle);
     circle.toFront();
     circle.setOnMouseClicked(value -> handleSelect(circle, atm));
+    atmCircleMap.put(atm, circle);
   }
 
   private void addRowNumber(int num) {
@@ -125,6 +129,14 @@ public class Controller {
     }
   }
 
+  private void displayNearestATM(ATM atm) {
+    if (nearestATM != null) {
+      atmCircleMap.get(nearestATM).setFill(Color.BLACK);
+    }
+    atmCircleMap.get(atm).setFill(Color.rgb(0x00, 0xff, 0x22));
+    nearestATM = atm;
+  }
+
   private Point2D getUserPoint(boolean error) {
     double x, y;
     try {
@@ -168,7 +180,11 @@ public class Controller {
 
     submitButton.setOnMouseClicked(event -> {
       Point2D userPoint = getUserPoint(true);
+      if (userPoint == null) return;
       displayUserPoint(userPoint);
+      ATM nearest = kdtree.nearestNeighbour(userPoint.getX(), userPoint.getY(), kdtree.getRoot());
+      displayNearestATM(nearest);
+      displayATMInfo(nearest);
     });
   }
 

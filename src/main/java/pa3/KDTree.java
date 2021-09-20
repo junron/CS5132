@@ -33,6 +33,16 @@ public class KDTree {
     return 1;
   }
 
+  private double squaredATMDistance(ATM atm1, ATM atm2) {
+    return Math.pow(atm1.getX() - atm2.getX(), 2) + Math.pow(atm1.getY() - atm2.getY(), 2);
+  }
+
+  private double squaredATMBoundingBoxDistance(ATM atm1, ATM atm2, int depth) {
+    double coord1 = depth % 2 == 0 ? atm1.getX() : atm1.getY();
+    double coord2 = depth % 2 == 0 ? atm2.getX() : atm2.getY();
+    return (coord1 - coord2) * (coord1 - coord2);
+  }
+
   // Constructor for the KDTree. See the KDTreeTester for how the constructor should work
   public KDTree(String filename) {
     File file = new File(filename);
@@ -157,10 +167,50 @@ public class KDTree {
   // Method to perform the nearest neighbour search in the k-d Tree.
   // You may add on your own parameters in this method. Ensure you do the same for the tester if so
   public ATM nearestNeighbour(double x, double y, KDTreeNode<ATM> curr) {
-    ATM nearest;
-    double nearestDistance;
-    // for(ATM atm: curr.)
-    return curr.getItem();
+    return nearestNeighbourHelper(x, y, curr, 0).getItem();
+  }
+
+  private KDTreeNode<ATM> nearestNeighbourHelper(double x, double y, KDTreeNode<ATM> curr, int depth) {
+    ATM atm = new ATM("", "", x, y);
+    double currDist = squaredATMDistance(atm, curr.getItem());
+    // Traverse all the way down like in insertion
+    KDTreeNode<ATM> next, other, best;
+    if (compareATMs(atm, curr.getItem(), depth) == -1) {
+      next = curr.getLeft();
+      other = curr.getRight();
+    } else {
+      next = curr.getRight();
+      other = curr.getLeft();
+    }
+    if (next != null) {
+      best = nearestNeighbourHelper(x, y, next, depth + 1);
+      double bestDistance = squaredATMDistance(atm, best.getItem());
+      // Current still larger
+      if (bestDistance > currDist) {
+        best = curr;
+      } else {
+        // Found better
+        currDist = bestDistance;
+        curr = best;
+      }
+    } else {
+      best = curr;
+    }
+    // Other side has nothing to search
+    if (other == null) return best;
+    // Find distance to bounding box boundary
+    // if this distance is greater than the current distance, discard all nodes in this bounding box
+    double boundingBoxDistance = squaredATMBoundingBoxDistance(atm, other.getItem(), depth);
+    if (boundingBoxDistance > currDist) {
+      return best;
+    }
+    best = nearestNeighbourHelper(x, y, other, depth + 1);
+    // Check if other side produces better result
+    if (squaredATMDistance(atm, best.getItem()) < currDist) {
+      return best;
+    } else {
+      return curr;
+    }
   }
 
   // Method to rebalance the k-d Tree. You may implement this method in the insertNode and deleteNode methods
