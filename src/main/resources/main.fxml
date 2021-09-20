@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pa3.Controller">
@@ -41,72 +42,96 @@
             <RowConstraints minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
         </rowConstraints>
     </GridPane>
-   <Label layoutX="334.0" layoutY="100.0" text="Enter X coordinate:">
+    <Label layoutX="334.0" layoutY="100.0" text="Enter X coordinate:">
+        <font>
+            <Font size="15.0" />
+        </font>
+    </Label>
+    <TextField layoutX="471.0" layoutY="98.0" prefHeight="26.0" prefWidth="140.0" fx:id="xCoord" />
+    <Label layoutX="333.0" layoutY="140.0" text="Enter Y coordinate:">
+        <font>
+            <Font size="15.0" />
+        </font>
+    </Label>
+    <TextField fx:id="yCoord" layoutX="470.0" layoutY="138.0" prefHeight="26.0" prefWidth="140.0" />
+    <Button fx:id="submitButton" layoutX="470.0" layoutY="180.0" mnemonicParsing="false" text="Submit" />
+    <Label fx:id="atmDisplayTitle" layoutX="333.0" layoutY="280.0" text="Nearest ATM:">
+        <font>
+            <Font size="18.0" />
+        </font>
+    </Label>
+    <Label fx:id="atmLocation" layoutX="467.0" layoutY="316.0" prefHeight="22.0" prefWidth="140.0" text="Select ATM">
+        <font>
+            <Font size="15.0" />
+        </font>
+        <padding>
+            <Insets left="10.0" />
+        </padding>
+    </Label>
+    <Label layoutX="333.0" layoutY="316.0" text="Location:">
+        <font>
+            <Font size="15.0" />
+        </font>
+    </Label>
+    <Label fx:id="atmPostalCode" layoutX="467.0" layoutY="347.0" prefHeight="22.0" prefWidth="140.0" text="Select ATM">
+        <font>
+            <Font size="15.0" />
+        </font>
+        <padding>
+            <Insets left="10.0" />
+        </padding>
+    </Label>
+    <Label layoutX="333.0" layoutY="347.0" text="Postal Code:">
+        <font>
+            <Font size="15.0" />
+        </font>
+    </Label>
+    <Label fx:id="atmCoords" layoutX="467.0" layoutY="379.0" prefHeight="22.0" prefWidth="140.0" text="Select ATM">
+        <font>
+            <Font size="15.0" />
+        </font>
+        <padding>
+            <Insets left="10.0" />
+        </padding>
+    </Label>
+    <Label layoutX="333.0" layoutY="379.0" text="Coordinates:">
+        <font>
+            <Font size="15.0" />
+        </font>
+    </Label>
+    <Label fx:id="atmDistance" layoutX="467.0" layoutY="414.0" prefHeight="22.0" prefWidth="140.0" text="Select ATM">
+        <font>
+            <Font size="15.0" />
+        </font>
+        <padding>
+            <Insets left="10.0" />
+        </padding>
+    </Label>
+    <Label layoutX="333.0" layoutY="414.0" text="Distance to user:">
+        <font>
+            <Font size="15.0" />
+        </font>
+    </Label>
+   <Circle fill="#080808" layoutX="75.0" layoutY="307.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
+   <Label layoutX="103.0" layoutY="296.0" text="ATM">
       <font>
          <Font size="15.0" />
       </font>
    </Label>
-   <TextField layoutX="471.0" layoutY="98.0" prefHeight="26.0" prefWidth="140.0" fx:id="xCoord" />
-   <Label layoutX="333.0" layoutY="140.0" text="Enter Y coordinate:">
+   <Circle layoutX="74.0" layoutY="338.0" radius="8.0" stroke="RED" strokeType="INSIDE" strokeWidth="3.0" />
+   <Label layoutX="102.0" layoutY="327.0" text="Selected ATM">
       <font>
          <Font size="15.0" />
       </font>
    </Label>
-   <TextField fx:id="yCoord" layoutX="470.0" layoutY="138.0" prefHeight="26.0" prefWidth="140.0" />
-   <Button layoutX="470.0" layoutY="180.0" mnemonicParsing="false" text="Submit" />
-   <Label fx:id="atmDisplayTitle" layoutX="333.0" layoutY="280.0" text="Nearest ATM:">
-      <font>
-         <Font size="18.0" />
-      </font>
-   </Label>
-   <Label fx:id="atmLocation" layoutX="467.0" layoutY="316.0" prefHeight="22.0" prefWidth="140.0" text="Select ATM">
-      <font>
-         <Font size="15.0" />
-      </font>
-      <padding>
-         <Insets left="10.0" />
-      </padding>
-   </Label>
-   <Label layoutX="333.0" layoutY="316.0" text="Location:">
+   <Circle fill="#00ff22" layoutX="74.0" layoutY="369.0" radius="8.0" stroke="#00ff0c" strokeType="INSIDE" />
+   <Label layoutX="101.0" layoutY="358.0" text="Nearest ATM">
       <font>
          <Font size="15.0" />
       </font>
    </Label>
-   <Label fx:id="atmPostalCode" layoutX="467.0" layoutY="347.0" prefHeight="22.0" prefWidth="140.0" text="Select ATM">
-      <font>
-         <Font size="15.0" />
-      </font>
-      <padding>
-         <Insets left="10.0" />
-      </padding>
-   </Label>
-   <Label layoutX="333.0" layoutY="347.0" text="Postal Code:">
-      <font>
-         <Font size="15.0" />
-      </font>
-   </Label>
-   <Label fx:id="atmCoords" layoutX="467.0" layoutY="379.0" prefHeight="22.0" prefWidth="140.0" text="Select ATM">
-      <font>
-         <Font size="15.0" />
-      </font>
-      <padding>
-         <Insets left="10.0" />
-      </padding>
-   </Label>
-   <Label layoutX="333.0" layoutY="379.0" text="Coordinates:">
-      <font>
-         <Font size="15.0" />
-      </font>
-   </Label>
-   <Label fx:id="atmDistance" layoutX="467.0" layoutY="414.0" prefHeight="22.0" prefWidth="140.0" text="Select ATM">
-      <font>
-         <Font size="15.0" />
-      </font>
-      <padding>
-         <Insets left="10.0" />
-      </padding>
-   </Label>
-   <Label layoutX="333.0" layoutY="414.0" text="Distance to user:">
+   <Circle fill="RED" layoutX="74.0" layoutY="401.0" radius="8.0" stroke="RED" strokeType="INSIDE" />
+   <Label layoutX="101.0" layoutY="390.0" text="You are here">
       <font>
          <Font size="15.0" />
       </font>

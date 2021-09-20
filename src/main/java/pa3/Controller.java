@@ -5,10 +5,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -17,8 +14,6 @@ import javafx.scene.text.Text;
 
 
 public class Controller {
-
-
   @FXML
   public Pane pane;
   @FXML
@@ -45,10 +40,19 @@ public class Controller {
   @FXML
   private Label atmDistance;
 
+  @FXML
+  private Button submitButton;
+
   private Circle selectedCircle;
   private ATM nearestATM;
 
+  private Circle userCircle;
+
   private final KDTree kdtree;
+
+  private final double scale = 20;
+  private final int radius = 8;
+
 
   public Controller() {
     this.kdtree = new KDTree("ATMLocations.csv");
@@ -56,8 +60,7 @@ public class Controller {
 
 
   private void addATMCircle(double x, double y, ATM atm) {
-    double size = 20;
-    Circle circle = new Circle(x * size, y * size, 8, Color.BLACK);
+    Circle circle = new Circle(x * scale, y * scale, radius, Color.BLACK);
     pane.getChildren().add(circle);
     circle.toFront();
     circle.setOnMouseClicked(value -> handleSelect(circle, atm));
@@ -112,6 +115,16 @@ public class Controller {
     }
   }
 
+  private void displayUserPoint(Point2D userPoint) {
+    if (userCircle != null) {
+      userCircle.setCenterX(userPoint.getX() * scale);
+      userCircle.setCenterY(userPoint.getY() * scale);
+    } else {
+      userCircle = new Circle(userPoint.getX() * scale, userPoint.getY() * scale, radius, Color.RED);
+      pane.getChildren().add(userCircle);
+    }
+  }
+
   private Point2D getUserPoint(boolean error) {
     double x, y;
     try {
@@ -152,6 +165,11 @@ public class Controller {
     }
     grid.toBack();
 
+
+    submitButton.setOnMouseClicked(event -> {
+      Point2D userPoint = getUserPoint(true);
+      displayUserPoint(userPoint);
+    });
   }
 
 }
