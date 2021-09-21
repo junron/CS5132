@@ -2,9 +2,7 @@ package pa3;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class KDTree {
   // You are NOT allowed to add more attributes.
@@ -64,8 +62,9 @@ public class KDTree {
       double y = Double.parseDouble(parts[3]);
       ATM atm = new ATM(location, postal, x, y);
       this.atmArr[i] = atm;
-      insertNode(atm);
+      // insertNode(atm);
     }
+    this.rebalance();
   }
 
   // Method to perform node insertion. You may define your own parameters in this method
@@ -215,7 +214,28 @@ public class KDTree {
 
   // Method to rebalance the k-d Tree. You may implement this method in the insertNode and deleteNode methods
   public void rebalance() {
+    this.root = buildTree(atmArr, 0);
+  }
 
+  private KDTreeNode<ATM> buildTree(ATM[] elements, int depth) {
+    if (elements == null || elements.length == 0) return null;
+    // Sort by coordinate depending on depth
+    Arrays.sort(elements, (atm1, atm2) -> {
+      if (depth % 2 == 0) {
+        return Double.compare(atm1.getX(), atm2.getX());
+      }
+      return Double.compare(atm1.getY(), atm2.getY());
+    });
+
+    int medianIndex = elements.length / 2;
+    ATM median = elements[medianIndex];
+
+    KDTreeNode<ATM> root = new KDTreeNode<>(median);
+    KDTreeNode<ATM> leftTree = buildTree(Arrays.copyOfRange(elements, 0, medianIndex), depth + 1);
+    KDTreeNode<ATM> rightTree = buildTree(Arrays.copyOfRange(elements, medianIndex + 1, elements.length), depth + 1);
+    root.setLeft(leftTree);
+    root.setRight(rightTree);
+    return root;
   }
 
   //DO NOT EDIT! This method returns the root node of the tree

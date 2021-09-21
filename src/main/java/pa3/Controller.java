@@ -47,7 +47,7 @@ public class Controller {
 
   private Circle selectedCircle;
   private ATM nearestATM;
-  private HashMap<ATM, Circle> atmCircleMap = new HashMap<>();
+  private final HashMap<ATM, Circle> atmCircleMap = new HashMap<>();
 
   private Circle userCircle;
 
@@ -58,7 +58,7 @@ public class Controller {
 
 
   public Controller() {
-    this.kdtree = new KDTree("ATMLocations2.csv");
+    this.kdtree = new KDTree("ATMLocations.csv");
   }
 
 
@@ -172,7 +172,7 @@ public class Controller {
     GridPane.setMargin(text, new Insets(-15, 0, 0, -30));
     grid.add(text, 0, 0);
 
-    for (ATM atm : kdtree.getAtmArr()) {
+    for (ATM atm : kdtree.nodesList()) {
       addATMCircle(atm.getX(), atm.getY(), atm);
     }
     grid.toBack();
