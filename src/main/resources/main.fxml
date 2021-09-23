@@ -10,6 +10,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Polyline?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pa3.Controller">
@@ -136,4 +138,15 @@
          <Font size="15.0" />
       </font>
    </Label>
+   <Polyline fill="RED" layoutX="64.0" layoutY="152.0" points="-50.0, -40.0, -27.20001220703125, -40.00001525878906, -37.5999755859375, -75.60000610351562, -50.0, -40.0" strokeType="INSIDE" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ff1f1f" height="78.0" layoutX="21.0" layoutY="111.0" stroke="BLACK" strokeType="INSIDE" width="9.0" />
+   <Label layoutX="-2.0" layoutY="194.0" prefHeight="22.0" prefWidth="54.0" text="North">
+      <font>
+         <Font size="15.0" />
+      </font>
+      <padding>
+         <Insets left="10.0" />
+      </padding>
+   </Label>
+   <Button fx:id="aboutProgrammer" layoutX="66.0" layoutY="436.0" mnemonicParsing="false" text="About Programmer" />
 </AnchorPane>

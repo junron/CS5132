@@ -1,18 +1,24 @@
 package pa3;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Stack;
 
 
 public class Controller {
@@ -44,6 +50,9 @@ public class Controller {
 
   @FXML
   private Button submitButton;
+
+  @FXML
+  private Button aboutProgrammer;
 
   private Circle selectedCircle;
   private ATM nearestATM;
@@ -91,7 +100,7 @@ public class Controller {
   private void handleSelect(Circle circle, ATM atm) {
     if (selectedCircle != null) {
       circle.setStrokeWidth(0);
-      selectedCircle.setStroke(Color.BLACK);
+      selectedCircle.setStrokeWidth(0);
     }
     selectedCircle = circle;
     circle.setStrokeWidth(2);
@@ -185,6 +194,23 @@ public class Controller {
       ATM nearest = kdtree.nearestNeighbour(userPoint.getX(), userPoint.getY(), kdtree.getRoot());
       displayNearestATM(nearest);
       displayATMInfo(nearest);
+    });
+
+    aboutProgrammer.setOnMouseClicked(event -> {
+      Stage dialog = new Stage();
+      String resourcePath = "/about.fxml";
+      URL location = getClass().getResource(resourcePath);
+      FXMLLoader fxmlLoader = new FXMLLoader(location);
+      Scene about;
+      try {
+        about = new Scene(fxmlLoader.load(), 480, 320);
+      } catch (IOException e) {
+        e.printStackTrace();
+        return;
+      }
+      dialog.setTitle("About programmer");
+      dialog.setScene(about);
+      dialog.show();
     });
   }
 
