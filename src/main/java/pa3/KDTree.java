@@ -8,6 +8,7 @@ public class KDTree {
   // You are NOT allowed to add more attributes.
   private KDTreeNode<ATM> root; //The root node of the k-d Tree
   private int numNodes; //The number of ATM objects / nodes in the k-d Tree
+  public int numVisited;
 
   // Each KDTreeNode should refer to an element of the following array of ATM objects
   private ATM[] atmArr; //An array of ATM objects read from the file put in order of the file
@@ -15,20 +16,15 @@ public class KDTree {
   // Complete the code for the methods below. You are allowed any additional helper methods.
 
   private int compareATMs(ATM atm1, ATM atm2, int depth) {
+    int res;
     if (depth % 2 == 0) {
-      if (atm1.getX() < atm2.getX()) {
-        return -1;
-      } else if (atm1.getX() == atm2.getX()) {
-        return 0;
-      }
+      res = Double.compare(atm1.getX(), atm2.getX());
+      if(res == 0) return Double.compare(atm1.getY(), atm2.getY());
     } else {
-      if (atm1.getY() < atm2.getY()) {
-        return -1;
-      } else if (atm1.getY() == atm2.getY()) {
-        return 0;
-      }
+      res = Double.compare(atm1.getY(), atm2.getY());
+      if(res == 0) return Double.compare(atm1.getX(), atm2.getX());
     }
-    return 1;
+    return res;
   }
 
   private double squaredATMDistance(ATM atm1, ATM atm2) {
@@ -62,7 +58,6 @@ public class KDTree {
       double y = Double.parseDouble(parts[3]);
       ATM atm = new ATM(location, postal, x, y);
       this.atmArr[i] = atm;
-      // insertNode(atm);
     }
     this.rebalance();
   }
@@ -70,76 +65,36 @@ public class KDTree {
   // Method to perform node insertion. You may define your own parameters in this method
   // The insertNode method is to be utilised in the constructor
   public void insertNode(ATM atm) {
-    if (root == null) {
-      root = new KDTreeNode<>(atm);
-      return;
-    }
-    KDTreeNode<ATM> curr = root;
-
-    int depth = 0;
-    while (true) {
-      KDTreeNode<ATM> next;
-      // ATM is smaller, go left
-      if (compareATMs(atm, curr.getItem(), depth) == -1) {
-        next = curr.getLeft();
-      } else {
-        next = curr.getRight();
-      }
-      if (next == null) break;
-      curr = next;
-      depth++;
-    }
-
-    // ATM is smaller, go left
-    if (compareATMs(atm, curr.getItem(), depth) == -1) {
-      curr.setLeft(new KDTreeNode<>(atm));
-    } else {
-      curr.setRight(new KDTreeNode<>(atm));
-    }
+    // Add atm to array and rebalance
+    this.atmArr = Arrays.copyOf(atmArr, this.numNodes + 1);
+    this.atmArr[this.numNodes] = atm;
+    this.rebalance();
+    this.numNodes++;
   }
 
   // Method to perform node deletion.
   // DO NOT CHANGE THE METHOD HEADER AND PARAMETERS
   public ATM deleteNode(ATM atmdel) {
-    KDTreeNode<ATM> curr = root;
-    int depth = 0;
-    while (true) {
-      KDTreeNode<ATM> next;
-      // ATM is smaller, go left
-      if (compareATMs(atmdel, curr.getItem(), depth) == -1) {
-        next = curr.getLeft();
-        // Next is the node to be deleted, delete child of current
-        if (next.getItem().equals(atmdel)) {
-          curr.setLeft(null);
-          // Reinsert children
-          insertNodeChildren(next);
-          return atmdel;
-        }
-      } else {
-        next = curr.getRight();
-        // Next is the node to be deleted, delete child of current
-        if (next.getItem().equals(atmdel)) {
-          curr.setRight(null);
-          // Reinsert children
-          insertNodeChildren(next);
-          return atmdel;
-        }
+    // Remove atmDel from atmArr, then rebalance tree
+    ATM[] newAtmArr = new ATM[atmArr.length - 1];
+    int atmCount = 0;
+    for (ATM atm : atmArr) {
+      if (atm.equals(atmdel)) {
+        continue;
       }
-      curr = next;
-      depth++;
+      // atmDel does not exist
+      // Since no atm was deleted, return null
+      if (atmCount == newAtmArr.length) {
+        return null;
+      }
+      newAtmArr[atmCount] = atm;
+      atmCount++;
     }
-  }
 
-  private void insertNodeChildren(KDTreeNode<ATM> node) {
-    insertNode(node.getLeft());
-    insertNode(node.getRight());
-  }
-
-  private void insertNode(KDTreeNode<ATM> node) {
-    if (node == null) return;
-    insertNode(node.getItem());
-    insertNode(node.getLeft());
-    insertNode(node.getRight());
+    this.atmArr = newAtmArr;
+    this.rebalance();
+    this.numNodes--;
+    return atmdel;
   }
 
   // Method does a NON-RECURSIVE in-order traveral of the k-d Tree
@@ -170,6 +125,7 @@ public class KDTree {
   }
 
   private KDTreeNode<ATM> nearestNeighbourHelper(double x, double y, KDTreeNode<ATM> curr, int depth) {
+    numVisited++;
     ATM atm = new ATM("", "", x, y);
     double currDist = squaredATMDistance(atm, curr.getItem());
     // Traverse all the way down like in insertion
@@ -220,17 +176,15 @@ public class KDTree {
   private KDTreeNode<ATM> buildTree(ATM[] elements, int depth) {
     if (elements == null || elements.length == 0) return null;
     // Sort by coordinate depending on depth
-    Arrays.sort(elements, (atm1, atm2) -> {
-      if (depth % 2 == 0) {
-        return Double.compare(atm1.getX(), atm2.getX());
-      }
-      return Double.compare(atm1.getY(), atm2.getY());
-    });
+    Arrays.sort(elements, (atm1, atm2) -> compareATMs(atm1, atm2, depth));
 
+    // Set median element as root
+    // Ensures tree is balanced by evenly distributing elements between left and right subtree
     int medianIndex = elements.length / 2;
     ATM median = elements[medianIndex];
 
     KDTreeNode<ATM> root = new KDTreeNode<>(median);
+    // Recursively build subtrees using remaining elements
     KDTreeNode<ATM> leftTree = buildTree(Arrays.copyOfRange(elements, 0, medianIndex), depth + 1);
     KDTreeNode<ATM> rightTree = buildTree(Arrays.copyOfRange(elements, medianIndex + 1, elements.length), depth + 1);
     root.setLeft(leftTree);

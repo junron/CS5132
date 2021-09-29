@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Stack;
 
 
 public class Controller {
@@ -57,20 +56,17 @@ public class Controller {
   private Circle selectedCircle;
   private ATM nearestATM;
   private final HashMap<ATM, Circle> atmCircleMap = new HashMap<>();
+  private boolean hasSelectedCircle;
 
   private Circle userCircle;
 
-  private final KDTree kdtree;
+  private KDTree kdtree;
 
   private final double scale = 20;
   private final int radius = 8;
 
 
-  public Controller() {
-    this.kdtree = new KDTree("ATMLocations.csv");
-  }
-
-
+  // Initialization functions
   private void addATMCircle(double x, double y, ATM atm) {
     Circle circle = new Circle(x * scale, y * scale, radius, Color.BLACK);
     pane.getChildren().add(circle);
@@ -96,8 +92,8 @@ public class Controller {
   }
 
   // Event handlers
-
   private void handleSelect(Circle circle, ATM atm) {
+    this.hasSelectedCircle = true;
     if (selectedCircle != null) {
       circle.setStrokeWidth(0);
       selectedCircle.setStrokeWidth(0);
@@ -169,27 +165,35 @@ public class Controller {
     return new Point2D(x, y);
   }
 
-  @FXML
-  public void initialize() {
-    for (int i = 1; i < 11; i++) {
-      addRowNumber(i);
-      addColumnNumber(i);
-    }
-    Text text = new Text("(0, 0)");
-    GridPane.setHalignment(text, HPos.LEFT);
-    GridPane.setValignment(text, VPos.TOP);
-    GridPane.setMargin(text, new Insets(-15, 0, 0, -30));
-    grid.add(text, 0, 0);
-
-    for (ATM atm : kdtree.nodesList()) {
-      addATMCircle(atm.getX(), atm.getY(), atm);
-    }
-    grid.toBack();
-
-
+  // Sets up event handlers
+  private void initHandlers() {
     submitButton.setOnMouseClicked(event -> {
       Point2D userPoint = getUserPoint(true);
       if (userPoint == null) return;
+      displayUserPoint(userPoint);
+      ATM nearest = kdtree.nearestNeighbour(userPoint.getX(), userPoint.getY(), kdtree.getRoot());
+      displayNearestATM(nearest);
+      displayATMInfo(nearest);
+    });
+
+
+    // User can also click on grid to set current location
+    pane.setOnMouseClicked(event -> {
+      // Pane click event already handled by ATM selection
+      if (this.hasSelectedCircle) {
+        this.hasSelectedCircle = false;
+        return;
+      }
+      double userX = event.getX() / scale;
+      double userY = event.getY() / scale;
+      if (userX < 0 || userY < 0) return;
+      if (userX > 10 || userY > 10) return;
+
+      Point2D userPoint = new Point2D(userX, userY);
+
+      xCoord.setText(String.format("%.2f", userX));
+      yCoord.setText(String.format("%.2f", userY));
+
       displayUserPoint(userPoint);
       ATM nearest = kdtree.nearestNeighbour(userPoint.getX(), userPoint.getY(), kdtree.getRoot());
       displayNearestATM(nearest);
@@ -212,6 +216,34 @@ public class Controller {
       dialog.setScene(about);
       dialog.show();
     });
+  }
+
+  @FXML
+  public void initialize() {
+    try {
+      this.kdtree = new KDTree("ATMLocations.csv");
+    } catch (IllegalArgumentException e) {
+      new Alert(Alert.AlertType.ERROR, "ATM location file could not be found.", ButtonType.OK).showAndWait();
+      System.exit(-1);
+    }
+
+    for (int i = 1; i < 11; i++) {
+      addRowNumber(i);
+      addColumnNumber(i);
+    }
+    Text text = new Text("(0, 0)");
+    GridPane.setHalignment(text, HPos.LEFT);
+    GridPane.setValignment(text, VPos.TOP);
+    GridPane.setMargin(text, new Insets(-15, 0, 0, -30));
+    grid.add(text, 0, 0);
+
+    // Add ATM locations on grid
+    for (ATM atm : kdtree.nodesList()) {
+      addATMCircle(atm.getX(), atm.getY(), atm);
+    }
+    grid.toBack();
+
+    initHandlers();
   }
 
 }
