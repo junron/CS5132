@@ -23,8 +23,8 @@ public class LSDRadix {
     // Implement your sorting algorithm below
     Integer[] dataArr = (Integer[]) data;
     int maxVal = max(dataArr);
-    int numDigits = (int) Math.ceil(Math.log10(maxVal));
-    for (int i = 1; i <= numDigits; i++) {
+    int numDigits = (int) Math.floor(Math.log10(maxVal)) + 1;
+    for (int i = 0; i < numDigits; i++) {
       LSDSort(dataArr, i);
     }
     return (T[]) dataArr;
@@ -39,7 +39,7 @@ public class LSDRadix {
   }
 
   public static void LSDSort(Integer[] items, int digit) {
-    int div = (int) Math.pow(10, digit - 1);
+    int div = (int) Math.pow(10, digit);
     int[] counts = new int[10];
     Integer[] output = new Integer[items.length];
 
