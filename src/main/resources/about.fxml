@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Text layoutX="322.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amogus">
+      <Text layoutX="220.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jun Rong">
          <font>
             <Font size="39.0" />
          </font>
       </Text>
+      <Text layoutX="147.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Made by:" />
+      <ImageView fitHeight="264.0" fitWidth="335.0" layoutX="168.0" layoutY="82.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Android-icon-on-transparent--background-PNG.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
