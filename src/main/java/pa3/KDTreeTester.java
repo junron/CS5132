@@ -18,5 +18,6 @@ public class KDTreeTester {
         System.out.println(kdtree);
         System.out.println("Testing the nearest neighbour method again:");
         System.out.println(kdtree.nearestNeighbour(8, 7, kdtree.getRoot()));
+        System.out.println(kdtree.nearestNeighbour(7, 4, kdtree.getRoot()));
     }
 }

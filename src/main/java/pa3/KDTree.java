@@ -15,14 +15,25 @@ public class KDTree {
 
   // Complete the code for the methods below. You are allowed any additional helper methods.
 
+  private boolean atm2Nearer(ATM atm1, ATM atm2, double targetX, double targetY) {
+    double distance1 = Math.pow(atm1.getX() - targetX, 2) + Math.pow(atm1.getY() - targetY, 2);
+    double distance2 = Math.pow(atm2.getX() - targetX, 2) + Math.pow(atm2.getY() - targetY, 2);
+    if (distance2 < distance1) return true;
+    if (distance2 == distance1) {
+      // Compare x then y
+      return compareATMs(atm1, atm2, 0) == 1;
+    }
+    return false;
+  }
+
   private int compareATMs(ATM atm1, ATM atm2, int depth) {
     int res;
     if (depth % 2 == 0) {
       res = Double.compare(atm1.getX(), atm2.getX());
-      if(res == 0) return Double.compare(atm1.getY(), atm2.getY());
+      if (res == 0) return Double.compare(atm1.getY(), atm2.getY());
     } else {
       res = Double.compare(atm1.getY(), atm2.getY());
-      if(res == 0) return Double.compare(atm1.getX(), atm2.getX());
+      if (res == 0) return Double.compare(atm1.getX(), atm2.getX());
     }
     return res;
   }
@@ -138,10 +149,11 @@ public class KDTree {
       other = curr.getLeft();
     }
     if (next != null) {
+      // Explore expected side
       best = nearestNeighbourHelper(x, y, next, depth + 1);
       double bestDistance = squaredATMDistance(atm, best.getItem());
       // Current still larger
-      if (bestDistance > currDist) {
+      if (!atm2Nearer(curr.getItem(), best.getItem(), x, y)) {
         best = curr;
       } else {
         // Found better
@@ -161,7 +173,7 @@ public class KDTree {
     }
     best = nearestNeighbourHelper(x, y, other, depth + 1);
     // Check if other side produces better result
-    if (squaredATMDistance(atm, best.getItem()) < currDist) {
+    if (atm2Nearer(curr.getItem(), best.getItem(), x, y)) {
       return best;
     } else {
       return curr;
