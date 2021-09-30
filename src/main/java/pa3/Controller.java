@@ -171,7 +171,9 @@ public class Controller {
       Point2D userPoint = getUserPoint(true);
       if (userPoint == null) return;
       displayUserPoint(userPoint);
+      kdtree.numVisited = 0;
       ATM nearest = kdtree.nearestNeighbour(userPoint.getX(), userPoint.getY(), kdtree.getRoot());
+      System.out.println(kdtree.numVisited);
       displayNearestATM(nearest);
       displayATMInfo(nearest);
     });
@@ -207,11 +209,12 @@ public class Controller {
       FXMLLoader fxmlLoader = new FXMLLoader(location);
       Scene about;
       try {
-        about = new Scene(fxmlLoader.load(), 480, 320);
+        about = new Scene(fxmlLoader.load(), 600, 400);
       } catch (IOException e) {
         e.printStackTrace();
         return;
       }
+      dialog.setResizable(false);
       dialog.setTitle("About programmer");
       dialog.setScene(about);
       dialog.show();

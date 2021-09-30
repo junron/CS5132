@@ -30,10 +30,8 @@ public class KDTree {
     int res;
     if (depth % 2 == 0) {
       res = Double.compare(atm1.getX(), atm2.getX());
-      if (res == 0) return Double.compare(atm1.getY(), atm2.getY());
     } else {
       res = Double.compare(atm1.getY(), atm2.getY());
-      if (res == 0) return Double.compare(atm1.getX(), atm2.getX());
     }
     return res;
   }
@@ -141,10 +139,12 @@ public class KDTree {
     double currDist = squaredATMDistance(atm, curr.getItem());
     // Traverse all the way down like in insertion
     KDTreeNode<ATM> next, other, best;
-    if (compareATMs(atm, curr.getItem(), depth) == -1) {
+    if (compareATMs(atm, curr.getItem(), depth) < 0) {
+      System.out.println("Left " + curr + "," + depth);
       next = curr.getLeft();
       other = curr.getRight();
     } else {
+      System.out.println("Right " + curr + "," + depth);
       next = curr.getRight();
       other = curr.getLeft();
     }
@@ -191,8 +191,17 @@ public class KDTree {
     Arrays.sort(elements, (atm1, atm2) -> compareATMs(atm1, atm2, depth));
 
     // Set median element as root
-    // Ensures tree is balanced by evenly distributing elements between left and right subtree
     int medianIndex = elements.length / 2;
+    // Ensures that all elements with the same key are on the same side of the tree
+    while (medianIndex < elements.length - 1) {
+      // Next element is the same, increment median index
+      if (compareATMs(elements[medianIndex], elements[medianIndex + 1], depth) == 0) {
+        medianIndex++;
+      } else {
+        // Next element is different, splitting is correct.
+        break;
+      }
+    }
     ATM median = elements[medianIndex];
 
     KDTreeNode<ATM> root = new KDTreeNode<>(median);

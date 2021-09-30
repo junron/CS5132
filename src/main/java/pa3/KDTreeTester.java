@@ -9,7 +9,7 @@ public class KDTreeTester {
 
         System.out.println("------------------------------");
         System.out.println("Testing the nearest neighbour method:");
-        System.out.println(kdtree.nearestNeighbour(8, 7, kdtree.getRoot()));
+        System.out.println(kdtree.nearestNeighbour(2, 10, kdtree.getRoot()));
 
         System.out.println("------------------------------");
         System.out.println("Testing deletion and rebalance:");
@@ -17,7 +17,7 @@ public class KDTreeTester {
         kdtree.deleteNode(atm);
         System.out.println(kdtree);
         System.out.println("Testing the nearest neighbour method again:");
-        System.out.println(kdtree.nearestNeighbour(8, 7, kdtree.getRoot()));
-        System.out.println(kdtree.nearestNeighbour(7, 4, kdtree.getRoot()));
+        // System.out.println(kdtree.nearestNeighbour(8, 6, kdtree.getRoot()));
+        // System.out.println(kdtree.nearestNeighbour(7, 4, kdtree.getRoot()));
     }
 }
