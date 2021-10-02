@@ -4,3 +4,11 @@
 10.4
 5.2
 3.1
+def generate_dec(n):
+    out = str(n)+"\n"
+    k = []
+    for _ in range(n):
+        a = random.randint(0,10000)/1000
+        b = random.randint(0,10000)/1000
+        out += f"Amogus,696969,{a},{b}\n"
+    return out

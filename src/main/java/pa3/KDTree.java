@@ -8,7 +8,6 @@ public class KDTree {
   // You are NOT allowed to add more attributes.
   private KDTreeNode<ATM> root; //The root node of the k-d Tree
   private int numNodes; //The number of ATM objects / nodes in the k-d Tree
-  public int numVisited;
 
   // Each KDTreeNode should refer to an element of the following array of ATM objects
   private ATM[] atmArr; //An array of ATM objects read from the file put in order of the file
@@ -21,7 +20,10 @@ public class KDTree {
     if (distance2 < distance1) return true;
     if (distance2 == distance1) {
       // Compare x then y
-      return compareATMs(atm1, atm2, 0) == 1;
+      int res = Double.compare(atm2.getX(), atm1.getX());
+      if (res < 0) return true;
+      if (res > 0) return false;
+      return Double.compare(atm2.getY(), atm1.getY()) < 0;
     }
     return false;
   }
@@ -87,8 +89,10 @@ public class KDTree {
     // Remove atmDel from atmArr, then rebalance tree
     ATM[] newAtmArr = new ATM[atmArr.length - 1];
     int atmCount = 0;
+    int removed = 0;
     for (ATM atm : atmArr) {
       if (atm.equals(atmdel)) {
+        removed++;
         continue;
       }
       // atmDel does not exist
@@ -98,6 +102,9 @@ public class KDTree {
       }
       newAtmArr[atmCount] = atm;
       atmCount++;
+    }
+    if (removed != 1) {
+      newAtmArr = Arrays.copyOf(newAtmArr, atmArr.length - removed);
     }
 
     this.atmArr = newAtmArr;
@@ -134,17 +141,14 @@ public class KDTree {
   }
 
   private KDTreeNode<ATM> nearestNeighbourHelper(double x, double y, KDTreeNode<ATM> curr, int depth) {
-    numVisited++;
     ATM atm = new ATM("", "", x, y);
     double currDist = squaredATMDistance(atm, curr.getItem());
     // Traverse all the way down like in insertion
     KDTreeNode<ATM> next, other, best;
     if (compareATMs(atm, curr.getItem(), depth) < 0) {
-      System.out.println("Left " + curr + "," + depth);
       next = curr.getLeft();
       other = curr.getRight();
     } else {
-      System.out.println("Right " + curr + "," + depth);
       next = curr.getRight();
       other = curr.getLeft();
     }
@@ -158,7 +162,6 @@ public class KDTree {
       } else {
         // Found better
         currDist = bestDistance;
-        curr = best;
       }
     } else {
       best = curr;
@@ -167,16 +170,16 @@ public class KDTree {
     if (other == null) return best;
     // Find distance to bounding box boundary
     // if this distance is greater than the current distance, discard all nodes in this bounding box
-    double boundingBoxDistance = squaredATMBoundingBoxDistance(atm, other.getItem(), depth);
+    double boundingBoxDistance = squaredATMBoundingBoxDistance(atm, curr.getItem(), depth);
     if (boundingBoxDistance > currDist) {
       return best;
     }
-    best = nearestNeighbourHelper(x, y, other, depth + 1);
+    KDTreeNode<ATM> otherBest = nearestNeighbourHelper(x, y, other, depth + 1);
     // Check if other side produces better result
-    if (atm2Nearer(curr.getItem(), best.getItem(), x, y)) {
-      return best;
+    if (atm2Nearer(best.getItem(), otherBest.getItem(), x, y)) {
+      return otherBest;
     } else {
-      return curr;
+      return best;
     }
   }
 
