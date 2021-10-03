@@ -1,4 +1,4 @@
-package pa3;
+package pa3.core;
 
 public class KDTreeNode<T> {
   // You are NOT allowed to add more attributes

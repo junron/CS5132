@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pa3.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pa3.ui.Controller">
     <Pane fx:id="pane" layoutX="66.0" layoutY="80.0" prefHeight="200.0" prefWidth="200.0" translateZ="-10.0" />
     <GridPane id="grid" fx:id="grid" gridLinesVisible="true" layoutX="67.0" layoutY="80.0">
         <columnConstraints>
@@ -133,7 +133,6 @@
          <Font size="15.0" />
       </font>
    </Label>
-   <Circle fill="RED" layoutX="74.0" layoutY="401.0" radius="8.0" stroke="RED" strokeType="INSIDE" />
    <Label layoutX="101.0" layoutY="390.0" text="You are here">
       <font>
          <Font size="15.0" />

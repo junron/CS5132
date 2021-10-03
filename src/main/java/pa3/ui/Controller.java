@@ -1,4 +1,4 @@
-package pa3;
+package pa3.ui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,8 +12,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import pa3.core.ATM;
+import pa3.core.KDTree;
 
 import java.io.IOException;
 import java.net.URL;
@@ -58,7 +62,8 @@ public class Controller {
   private final HashMap<ATM, Circle> atmCircleMap = new HashMap<>();
   private boolean hasSelectedCircle;
 
-  private Circle userCircle;
+  private Star userStar;
+  private Line directionLine;
 
   private KDTree kdtree;
 
@@ -125,13 +130,11 @@ public class Controller {
   }
 
   private void displayUserPoint(Point2D userPoint) {
-    if (userCircle != null) {
-      userCircle.setCenterX(userPoint.getX() * scale);
-      userCircle.setCenterY(userPoint.getY() * scale);
-    } else {
-      userCircle = new Circle(userPoint.getX() * scale, userPoint.getY() * scale, radius, Color.RED);
-      pane.getChildren().add(userCircle);
+    if (userStar != null) {
+      pane.getChildren().remove(userStar);
     }
+    userStar = new Star(userPoint.getX() * scale, userPoint.getY() * scale, radius * 2, (int) (radius * 0.75));
+    pane.getChildren().add(userStar);
   }
 
   private void displayNearestATM(ATM atm) {
@@ -227,6 +230,9 @@ public class Controller {
       new Alert(Alert.AlertType.ERROR, "ATM location file could not be found.", ButtonType.OK).showAndWait();
       System.exit(-1);
     }
+
+    Star star = new Star(9, 320, radius * 2, (int) (radius * 0.75));
+    pane.getChildren().add(star);
 
     for (int i = 1; i < 11; i++) {
       addRowNumber(i);

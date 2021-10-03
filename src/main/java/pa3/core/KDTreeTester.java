@@ -1,4 +1,4 @@
-package pa3;
+package pa3.core;
 
 public class KDTreeTester {
     public static void main(String[] args) {

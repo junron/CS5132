@@ -1,4 +1,4 @@
-package pa3;
+package pa3.core;
 
 import java.util.Objects;
 
