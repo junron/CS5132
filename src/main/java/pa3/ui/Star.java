@@ -13,7 +13,7 @@ public class Star extends Polygon {
       getPoints().addAll(xCoords[i], yCoords[i]);
     }
     setFill(Color.RED);
-    setRotate(-15);
+    setRotate(-17);
   }
 
   protected static double[] getXCoordinates(double x, double y, int r, int innerR) {

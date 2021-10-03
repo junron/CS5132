@@ -14,6 +14,7 @@ public class KDTree {
 
   // Complete the code for the methods below. You are allowed any additional helper methods.
 
+  // Returns true if atm2 is closer to the target coordinates than atm1
   private boolean atm2Nearer(ATM atm1, ATM atm2, double targetX, double targetY) {
     double distance1 = Math.pow(atm1.getX() - targetX, 2) + Math.pow(atm1.getY() - targetY, 2);
     double distance2 = Math.pow(atm2.getX() - targetX, 2) + Math.pow(atm2.getY() - targetY, 2);
@@ -28,6 +29,10 @@ public class KDTree {
     return false;
   }
 
+  // Compares both ATMs according to the coordinate determined by the depth
+  // Returns a positive number if atm1 is larger than atm2
+  // Returns 0 if atm1 is equal to atm2
+  // Returns a negative number if atm1 is smaller than atm2
   private int compareATMs(ATM atm1, ATM atm2, int depth) {
     int res;
     if (depth % 2 == 0) {
@@ -38,10 +43,12 @@ public class KDTree {
     return res;
   }
 
+  // Returns the squared distance between two atms
   private double squaredATMDistance(ATM atm1, ATM atm2) {
     return Math.pow(atm1.getX() - atm2.getX(), 2) + Math.pow(atm1.getY() - atm2.getY(), 2);
   }
 
+  // Returns the squared perpendicular distance on an axis determined by the depth
   private double squaredATMBoundingBoxDistance(ATM atm1, ATM atm2, int depth) {
     double coord1 = depth % 2 == 0 ? atm1.getX() : atm1.getY();
     double coord2 = depth % 2 == 0 ? atm2.getX() : atm2.getY();
@@ -103,13 +110,14 @@ public class KDTree {
       newAtmArr[atmCount] = atm;
       atmCount++;
     }
+    // More than one ATM might have been removed
     if (removed != 1) {
       newAtmArr = Arrays.copyOf(newAtmArr, atmArr.length - removed);
     }
 
     this.atmArr = newAtmArr;
-    this.rebalance();
     this.numNodes--;
+    this.rebalance();
     return atmdel;
   }
 
@@ -125,7 +133,7 @@ public class KDTree {
         stack.push(curr);
         curr = curr.getLeft();
       }
-      // Go up one level and traverse right
+      // Go up one level and repeat traversal with right node
       curr = stack.pop();
       out.add(curr.getItem());
       curr = curr.getRight();
@@ -143,7 +151,9 @@ public class KDTree {
   private KDTreeNode<ATM> nearestNeighbourHelper(double x, double y, KDTreeNode<ATM> curr, int depth) {
     ATM atm = new ATM("", "", x, y);
     double currDist = squaredATMDistance(atm, curr.getItem());
-    // Traverse all the way down like in insertion
+    // At each node, we consider the splitting line defined by that node
+    // and set next to be the subtree whose bounding area contains the target point
+    // and set other to the other subtree
     KDTreeNode<ATM> next, other, best;
     if (compareATMs(atm, curr.getItem(), depth) < 0) {
       next = curr.getLeft();
@@ -153,29 +163,30 @@ public class KDTree {
       other = curr.getLeft();
     }
     if (next != null) {
-      // Explore expected side
+      // Explore expected side, recursively
       best = nearestNeighbourHelper(x, y, next, depth + 1);
       double bestDistance = squaredATMDistance(atm, best.getItem());
-      // Current still larger
-      if (!atm2Nearer(curr.getItem(), best.getItem(), x, y)) {
-        best = curr;
-      } else {
+      if (atm2Nearer(curr.getItem(), best.getItem(), x, y)) {
         // Found better
         currDist = bestDistance;
+      } else {
+        // Current still larger
+        best = curr;
       }
     } else {
       best = curr;
     }
-    // Other side has nothing to search
+    // Other side has nothing to search, return best from "expected" side
     if (other == null) return best;
     // Find distance to bounding box boundary
-    // if this distance is greater than the current distance, discard all nodes in this bounding box
+    // if this distance is greater than the current distance, discard all nodes in the other side of the
+    // bounding box
     double boundingBoxDistance = squaredATMBoundingBoxDistance(atm, curr.getItem(), depth);
     if (boundingBoxDistance > currDist) {
       return best;
     }
-    KDTreeNode<ATM> otherBest = nearestNeighbourHelper(x, y, other, depth + 1);
     // Check if other side produces better result
+    KDTreeNode<ATM> otherBest = nearestNeighbourHelper(x, y, other, depth + 1);
     if (atm2Nearer(best.getItem(), otherBest.getItem(), x, y)) {
       return otherBest;
     } else {

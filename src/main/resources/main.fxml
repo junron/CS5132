@@ -10,8 +10,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.Polyline?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -118,7 +116,7 @@
    <Circle fill="#080808" layoutX="75.0" layoutY="307.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" />
    <Label layoutX="103.0" layoutY="296.0" text="ATM">
       <font>
-         <Font size="15.0" />
+         <Font name="Arial" size="15.0" />
       </font>
    </Label>
    <Circle layoutX="74.0" layoutY="338.0" radius="8.0" stroke="RED" strokeType="INSIDE" strokeWidth="3.0" />
@@ -138,9 +136,7 @@
          <Font size="15.0" />
       </font>
    </Label>
-   <Polyline fill="RED" layoutX="64.0" layoutY="152.0" points="-50.0, -40.0, -27.20001220703125, -40.00001525878906, -37.5999755859375, -75.60000610351562, -50.0, -40.0" strokeType="INSIDE" />
-   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ff1f1f" height="78.0" layoutX="21.0" layoutY="111.0" stroke="BLACK" strokeType="INSIDE" width="9.0" />
-   <Label layoutX="-2.0" layoutY="194.0" prefHeight="22.0" prefWidth="54.0" text="North">
+   <Label layoutX="-2.0" layoutY="194.0" prefHeight="22.0" prefWidth="54.0" text="North" textAlignment="CENTER">
       <font>
          <Font size="15.0" />
       </font>
@@ -150,4 +146,9 @@
    </Label>
    <Button fx:id="aboutProgrammer" layoutX="66.0" layoutY="436.0" mnemonicParsing="false" text="About Programmer" />
    <Text layoutX="334.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Or click grid to set position" />
+   <Text layoutX="1.0" layoutY="177.0" strokeType="OUTSIDE" strokeWidth="0.0" text="↑" textAlignment="CENTER" wrappingWidth="53.59999999999991">
+      <font>
+         <Font size="96.0" />
+      </font>
+   </Text>
 </AnchorPane>
